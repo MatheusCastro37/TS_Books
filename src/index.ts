@@ -1,9 +1,12 @@
 import fastify from "fastify";
 import "dotenv/config";
+import { client } from "./database/mongo";
 
 const server = fastify();
 
 const port = process.env.PORT as number | undefined;
+
+client.connect();
 
 server.get("/ping", async (request, reply) => {
   return "pong?\n";
