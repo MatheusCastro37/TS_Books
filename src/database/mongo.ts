@@ -13,7 +13,7 @@ const Mongo = new MongoClient(uri, {
 });
 
 const client = Mongo;
-const db = Mongo.db("books");
+const db = Mongo.db("lib");
 
 console.log("connected on MongoDB!");
 
