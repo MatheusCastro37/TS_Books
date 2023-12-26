@@ -3,6 +3,8 @@ import "dotenv/config";
 import { client } from "./database/mongo";
 import { CreateBookController } from "./controllers/create-book/create-book";
 import { CreateBookRepository } from "./repositories/create-book/create-book";
+import { GetBooksRepository } from "./repositories/get-books/get-books";
+import { GetBooksController } from "./controllers/get-books/get-books";
 
 const server = fastify();
 
@@ -19,11 +21,9 @@ interface IBodyType {
 server.post(
   "/createBook",
   async (request: FastifyRequest<{ Body: IBodyType }>, reply) => {
-    const mongoCreateRepository = new CreateBookRepository();
+    const createBookRepository = new CreateBookRepository();
 
-    const createBookController = new CreateBookController(
-      mongoCreateRepository
-    );
+    const createBookController = new CreateBookController(createBookRepository);
 
     const { statusCode, body } = await createBookController.handle(
       request.body
@@ -32,6 +32,16 @@ server.post(
     reply.code(statusCode).send(body);
   }
 );
+
+server.get("/books", async (request, reply) => {
+  const getBooksRepository = new GetBooksRepository();
+
+  const getBooksController = new GetBooksController(getBooksRepository);
+
+  const { statusCode, body } = await getBooksController.handle();
+
+  reply.code(statusCode).send(body);
+});
 
 server.listen({ port: port }, (err, address) => {
   if (err) {
